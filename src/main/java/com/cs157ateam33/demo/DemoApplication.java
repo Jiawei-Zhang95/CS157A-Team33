@@ -24,7 +24,7 @@ public class DemoApplication {
     CommandLineRunner init(UserRepository userRepository, MovieRepository MovieRepository, RatingRepository
             ratingRepository) {
         return (args) -> {
-            Arrays.asList("jackson,russel,quentin".split(",")).forEach(a -> {
+            Arrays.asList("Jiawei,Adan,Udaypal".split(",")).forEach(a -> {
                 userRepository.save(new User(a, "password"));
             });
             MovieRepository.save(new Movie("Deadpool", "A fast-talking mercenary with a morbid sense of humor is " +
