@@ -28,6 +28,20 @@ app.listen(4040, () => {
     console.log('Server is running')
 });
 
+app.get('/login', (req,res)=>{
+    const {email}= req.query;
+    db.query(`SELECT * FROM User WHERE email = '${email}'`, (err, result)=>{
+        if(err){
+            return res.send(err);
+        }
+        else{
+            return res.json({
+                data: result
+            })
+        }
+    });
+})
+
 app.get('/content', (req, res)=>{
     
     db.query('SELECT * FROM CONTENT', (err, results)=>{
