@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./login.css";
+import { Link, Redirect } from "react-router-dom";
 import {
   MDBRow,
   MDBCol,
@@ -7,8 +8,7 @@ import {
   MDBBtn,
   MDBCard,
   MDBCardBody,
-  MDBModalFooter,
-  MDBIcon
+  MDBModalFooter
 } from "mdbreact";
 
 class Login extends Component {
@@ -37,7 +37,7 @@ class Login extends Component {
       <div className="bg">
         <MDBRow>
           <MDBCol md="9" lg="7" xl="5" className="mx-auto mt-3">
-            <MDBCard>
+            <MDBCard style={{ marginTop: "25%" }}>
               <MDBCardBody className="mx-4">
                 <div className="text-center">
                   <h3 className="dark-grey-text mb-5">
@@ -77,11 +77,10 @@ class Login extends Component {
                 />
                 <div className="text-center pt-3 mb-3">
                   <MDBBtn
-                    type="submit"
                     type="button"
                     gradient="blue"
                     rounded
-                    className="btn-block z-depth-1a"
+                    className="btn blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light"
                     onClick={this.login}
                   >
                     Log in
@@ -89,16 +88,16 @@ class Login extends Component {
                 </div>
               </MDBCardBody>
               <MDBModalFooter className="mx-5 pt-3 mb-1">
-                <p
+                <div
                   className="grey-text d-flex justify-content-end"
                   style={{ fontSize: "0.8rem" }}
                 >
                   Not a member?{" "}
-                  <a href="#!" className="blue-text ml-1">
+                  <Link to="/signup" className="blue-text ml-1">
                     {" "}
                     Sign Up
-                  </a>
-                </p>
+                  </Link>
+                </div>
               </MDBModalFooter>
             </MDBCard>
           </MDBCol>
