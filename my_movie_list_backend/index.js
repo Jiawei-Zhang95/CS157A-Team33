@@ -71,6 +71,19 @@ app.get('/content/add', (req, res) =>{
     });
 })
 
+app.get('/signup', (req, res) =>{
+    const {email, password, username} = req.query;
+    const INSERT_USER = `INSERT INTO User VALUES('${email}','${password}', '${username}')`
+    db.query(INSERT_USER, (err, results)=>{
+        if(err){
+            return res.send(err)
+        }
+        else{
+            return res.send('user sucessfully added')
+        }
+    });
+})
+
 app.get('/',(req, res) => {
     res.send('go to /content to see all the movies')
 });
