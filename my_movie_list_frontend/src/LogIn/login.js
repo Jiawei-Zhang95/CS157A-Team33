@@ -77,17 +77,15 @@ class Login extends Component {
                   }
                 />
                 <div className="text-center pt-3 mb-3">
-                  <Link to="/home">
-                    <MDBBtn
-                      type="button"
-                      gradient="blue"
-                      rounded
-                      className="btn blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light"
-                      onClick={this.login}
-                    >
-                      Log in
-                    </MDBBtn>
-                  </Link>
+                  <MDBBtn
+                    type="button"
+                    gradient="blue"
+                    rounded
+                    className="btn blue-gradient btn-block btn-rounded z-depth-1a waves-effect waves-light"
+                    onClick={this.login}
+                  >
+                    Log in
+                  </MDBBtn>
                 </div>
               </MDBCardBody>
               <MDBModalFooter className="mx-5 pt-3 mb-1">
