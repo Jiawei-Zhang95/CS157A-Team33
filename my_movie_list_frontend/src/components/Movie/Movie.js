@@ -10,7 +10,8 @@ class Movie extends Component {
   state = {
     movie: null,
     directors: [],
-    loading: false
+    loading: false,
+    release_date: null
   };
 
   componentDidMount() {
@@ -36,10 +37,11 @@ class Movie extends Component {
                 const directors = result.crew.filter(
                   member => member.job === "Director"
                 );
+                const release_date = result.release_date;
 
                 this.setState({
-                  actors: result.cast,
-                  directors
+                  directors,
+                  release_date
                 });
               });
           });
@@ -56,6 +58,7 @@ class Movie extends Component {
             <MovieInfo
               movie={this.state.movie}
               directors={this.state.directors}
+              release_date={this.state.release_date}
             />
           </div>
         ) : null}

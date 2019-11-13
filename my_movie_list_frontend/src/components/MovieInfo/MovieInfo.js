@@ -37,6 +37,8 @@ const MovieInfo = props => {
               </p>
             );
           })}
+          <h3>Release Date</h3>
+          <p>{props.movie.release_date}</p>
         </div>
         <FontAwesome className="fa-film" name="film" size="5x" />
       </div>
