@@ -12,6 +12,7 @@ import {
   POSTER_SIZE,
   BACKDROP_SIZE
 } from "../config";
+import NavBar from "../components/navBar";
 
 class Home extends Component {
   state = {
@@ -80,6 +81,9 @@ class Home extends Component {
   render() {
     return (
       <div className="rmdb-home">
+        <div>
+          <NavBar />
+        </div>
         {this.state.heroImage ? (
           <div>
             <HeroImage
