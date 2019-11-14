@@ -62,7 +62,6 @@ class Movie extends Component {
             />
           </div>
         ) : null}
-        {this.state.loading ? <Spinner /> : null}
       </div>
     );
   }
