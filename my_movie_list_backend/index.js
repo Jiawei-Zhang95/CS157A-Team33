@@ -97,6 +97,68 @@ app.get('/content/add', (req, res) =>{
     });
 })
 
+app.get('/addReview', (req,res)=>{
+    const{email,contentname, releaseyear, review, rating} = req.query;
+    const INSERT_USER_CONTENT = `INSERT INTO user_content VALUES('${email}','${contentname}','${releaseyear}','${review}','${rating}')`
+    db.query(INSERT_USER_CONTENT,(err, results)=>{
+        if(err){
+            return res.send(err)
+        }
+        else{
+            return res.send('review sucessfullt added')
+        }
+
+    });
+})
+
+app.get('/getContentUnionMovie', (req, res)=>{
+    const{contentname, releaseyear} = req.query;
+    console.log(contentname);
+    const GET_CONTENT = `SELECT contentname, releaseyear, contentgenre, studioname, poster, movie_length, description FROM content JOIN movie ON contentname = movie_contentname AND releaseyear = movie_releaseyear WHERE contentname = '${contentname}' AND releaseyear = '${releaseyear}'`;
+    db.query(GET_CONTENT, (err, results)=>{
+        if(err){
+            return res.send(err);
+        }
+        else{
+            return res.json({
+                data: results
+            })
+        }
+    }); 
+})
+
+app.get('/getContentUnionTvSeries', (req, res)=>{
+    const{contentname, releaseyear} = req.query;
+    const GET_CONTENT = `SELECT contentname, releaseyear, contentgenre, studioname, poster, no_of_episodes, description FROM content JOIN tvseries ON contentname = tvseries_contentname and releaseyear = tvseries_releaseyear WHERE contentname = '${contentname}' AND releaseyear = '${releaseyear}'`;
+    db.query(GET_CONTENT, (err, results)=>{
+        if(err){
+            return res.send(err);
+        }
+        else{
+            return res.json({
+                data: results
+            })
+        }
+    }); 
+})
+
+
+app.get('/getMovie', (req, res)=>{
+    const{movie_contentname, movie_releaseyear} = req.query;
+    const GET_CONTENT = `SELECT * FROM movie WHERE movie_contentname = '${movie_contentname}' AND movie_releaseyear = '${movie_releaseyear}'`;
+    db.query(GET_CONTENT, (err, results)=>{
+        if(err){
+            return res.send(err);
+        }
+        else{
+            return res.json({
+                data: results
+            })
+        }
+    }); 
+})
+
+
 app.get('/signup', (req, res) =>{
     const {email, password, username} = req.query;
     const INSERT_USER = `INSERT INTO User VALUES('${email}','${password}', '${username}')`

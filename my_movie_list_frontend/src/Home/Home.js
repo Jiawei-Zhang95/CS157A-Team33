@@ -1,129 +1,140 @@
-import React, { Component } from "react";
-import HeroImage from "../components/HeroImage/HeroImage";
-import SearchBar from "../components/SearchBar/SearchBar";
-import FourColGrid from "../components/FourColGrid/FourColGrid";
-import MovieThumb from "../components/MovieThumb/MovieThumb";
-import LoadMoreBtn from "../components/LoadMoreBtn/LoadMoreBtn";
-import Spinner from "../components/Spinner/Spinner";
-import {
-  API_URL,
-  API_KEY,
-  IMAGE_BASE_URL,
-  POSTER_SIZE,
-  BACKDROP_SIZE
-} from "../config";
-import NavBar from "../components/navBar";
+import React, { Component } from 'react';
+import './home.css';
+import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol,MDBContainer } from 'mdbreact';
+import {Link, Redirect} from 'react-router-dom'
+import { release } from 'os';
 
-class Home extends Component {
-  state = {
-    movies: [],
-    heroImage: null,
-    loading: false,
-    currentPage: 0,
-    totalPages: 0,
-    searchTerm: ""
-  };
 
-  componentDidMount() {
-    this.setState({ loading: true });
-    const endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
-    this.fetchItems(endpoint);
-  }
-
-  searchItems = searchTerm => {
-    console.log(searchTerm);
-    let endpoint = "";
-    this.setState({
-      movies: [],
-      loading: true,
-      searchTerm
-    });
-
-    if (searchTerm === "") {
-      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
-    } else {
-      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query=${searchTerm}`;
+class Home extends Component{
+    constructor(props){
+        super(props);
+        this.state ={
+            moreInfo: false,
+            addList: false,
+            e: undefined,
+            content: [],
+            tvSeries: [],
+            movies: [],
+            dbcontent: [],
+            dbtvshows: [],
+            dbmovies: []
+        }
     }
 
-    this.fetchItems(endpoint);
-  };
 
-  loadMoreItems = () => {
-    let endpoint = "";
-    this.setState({ loading: true });
-
-    if (this.state.searchTerm === "") {
-      endpoint = `${API_URL}movie/popular?api_key=${API_KEY}&language=en-US&page=${this
-        .state.currentPage + 1}`;
-    } else {
-      endpoint = `${API_URL}search/movie?api_key=${API_KEY}&language=en-US&query${
-        this.state.searchTerm
-      }&page=${this.state.currentPage + 1}`;
+    componentWillMount(){
+        this.getContent();
+        this.getTvSeries();
+        this.getMovies();
     }
-    this.fetchItems(endpoint);
-  };
 
-  fetchItems = endpoint => {
-    fetch(endpoint)
-      .then(result => result.json())
-      .then(result => {
-        console.log(result);
-        this.setState({
-          movies: [...this.state.movies, ...result.results],
-          heroImage: this.state.heroImage || result.results[0],
-          loading: false,
-          currentPage: result.page,
-          totalPages: result.total_pages
-        });
-      });
-  };
+    getContent = () =>{
+        fetch(`http://localhost:4040/content`)
+        .then(res => res.json())
+        .then(res => {
+            this.setState({ content: res.data});
+        })
+        .catch(err => console.error(err));
+    };
 
-  render() {
-    return (
-      <div className="rmdb-home">
-        <div>
-          <NavBar />
-        </div>
-        {this.state.heroImage ? (
-          <div>
-            <HeroImage
-              image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${this.state.heroImage.backdrop_path}`}
-              title={this.state.heroImage.original_title}
-              text={this.state.heroImage.overview}
-            />
-            <SearchBar callback={this.searchItems} />
-          </div>
-        ) : null}
-        <div className="rmdb-home-grid">
-          <FourColGrid
-            header={this.state.searchTerm ? "Search Result" : "Popular Movies"}
-            loading={this.state.loading}
-          >
-            {this.state.movies.map((element, i) => {
-              return (
-                <MovieThumb
-                  key={i}
-                  clickable={true}
-                  image={
-                    element.poster_path
-                      ? `${IMAGE_BASE_URL}${POSTER_SIZE}${element.poster_path}`
-                      : "./images/no_image.jpg"
-                  }
-                  movieId={element.id}
-                  movieName={element.original_title}
-                />
-              );
-            })}
-          </FourColGrid>
-          {this.state.loading ? <Spinner /> : null}
-          {this.state.currentPage < +this.state.totalPages &&
-          !this.state.loading ? (
-            <LoadMoreBtn text="Load More" onClick={this.loadMoreItems} />
-          ) : null}
-        </div>
-      </div>
-    );
-  }
+    getTvSeries = () =>{
+        fetch(`http://localhost:4040/tvseries`)
+        .then(res => res.json())
+        .then(res => {
+            this.setState({ tvSeries: res.data});
+        })
+        .catch(err => console.error(err));
+    };
+
+    getMovies = () =>{
+        fetch(`http://localhost:4040/movies`)
+        .then(res => res.json())
+        .then(res => {
+            this.setState({ movies: res.data});
+        })
+        .catch(err => console.error(err));
+    };
+    
+
+    //////////////////Cards of content///////////////////
+
+    renderContent = ({
+        contentname,
+        releaseyear,
+        contentgenre,
+        studioname,
+        poster,
+        description
+
+    }) => {
+      var id= [];
+      id.push(contentname);
+      id.push(releaseyear);
+      id.push(poster);
+    //   id.push(contentgenre);
+    //   id.push(studioname);
+
+      
+        return (
+            <div className="d-inline-block" style={{float: "left", marginTop: "20px"}}>
+                <MDBCol >
+                    <MDBContainer>
+                            <MDBCard style={{ width: "19rem" , height: "35rem", background: "rgba(1,1,1, 0.05)"}}>
+                            <MDBCardImage className="img-fluid" src={poster} waves/>
+                            <MDBCardBody>
+                                <MDBCardTitle>{contentname}</MDBCardTitle>
+                                <MDBCardText >{description}</MDBCardText>
+                                <Link id ={id} style={{fontSize: "19px"}}onClick={this.moreInfo}>More Info ⓘ</Link>
+                                <MDBBtn id ={id} type="submit" outline color="primary" 
+                                    style={{marginTop: "-0.6rem",float: "right", borderRadius: "20px", fontSize:"10px"}} onClick={this.addToList}>
+                                        🖉
+                                </MDBBtn>
+                            </MDBCardBody>
+                            </MDBCard>
+                    </MDBContainer>
+                </MDBCol>
+            </div>
+        )
+    }
+
+    moreInfo = (e)=>{
+        console.log(e.target.id);
+        var idArray = e.target.id.split(',');
+        this.setState({e: idArray});
+        this.setState({moreInfo: true})
+
+    }
+
+    addToList = (e)=>{
+        console.log(e.target.id);
+        var idArray = e.target.id.split(',');
+        
+        this.setState({e: idArray});
+        
+        this.setState({addToList: true}); 
+    }
+
+    render(){
+        if(this.state.addToList === true || this.state.moreInfo === true){
+            if(this.state.addToList === true){
+                return <Redirect to={{
+                    pathname: '/review', state: {contentname: this.state.e[0], 
+                    releaseyear: this.state.e[1], poster: this.state.e[2]
+                }}} />
+            }
+            else{
+                return <Redirect to={{
+                    pathname: '/movieInfo', state: {contentname: this.state.e[0], 
+                    releaseyear: this.state.e[1], poster: this.state.e[2]
+                }}} />
+            }
+        }
+        else{
+            return <div>
+            {this.state.content.map(this.renderContent)}
+            </div>
+        }
+        
+    }
 }
-
 export default Home;

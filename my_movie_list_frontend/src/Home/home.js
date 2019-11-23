@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import './home.css';
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol,MDBContainer } from 'mdbreact';
-import {Redirect} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
+import { release } from 'os';
 
 
 class Home extends Component{
     constructor(props){
         super(props);
         this.state ={
+            moreInfo: false,
             addList: false,
             e: undefined,
             content: [],
@@ -27,7 +29,7 @@ class Home extends Component{
     }
 
     getContent = () =>{
-        fetch('http://localhost:4040/content')
+        fetch(`http://localhost:4040/content`)
         .then(res => res.json())
         .then(res => {
             this.setState({ content: res.data});
@@ -36,7 +38,7 @@ class Home extends Component{
     };
 
     getTvSeries = () =>{
-        fetch('http://localhost:4040/tvseries')
+        fetch(`http://localhost:4040/tvseries`)
         .then(res => res.json())
         .then(res => {
             this.setState({ tvSeries: res.data});
@@ -45,7 +47,7 @@ class Home extends Component{
     };
 
     getMovies = () =>{
-        fetch('http://localhost:4040/movies')
+        fetch(`http://localhost:4040/movies`)
         .then(res => res.json())
         .then(res => {
             this.setState({ movies: res.data});
@@ -69,38 +71,63 @@ class Home extends Component{
       id.push(contentname);
       id.push(releaseyear);
       id.push(poster);
+    //   id.push(contentgenre);
+    //   id.push(studioname);
+
       
-        return <div className="d-inline-block" style={{float: "left", marginTop: "20px"}}>
-            
-            <MDBCol>
-            <MDBContainer fluid >
-                    <MDBCard style={{ width: "19rem" , height: "35rem"}}>
-                    <MDBCardImage className="img-fluid" src={poster} waves/>
-                    <MDBCardBody>
-                        <MDBCardTitle>{contentname}</MDBCardTitle>
-                        <MDBCardText>{description}</MDBCardText>
-                        <MDBBtn id ={id} type="submit" outline color="primary" onClick={this.addToList}>Add To List</MDBBtn>
-                    </MDBCardBody>
-                    </MDBCard>
-            </MDBContainer>
-            </MDBCol>
-        </div>
+        return (
+            <div className="d-inline-block" style={{float: "left", marginTop: "20px"}}>
+                <MDBCol >
+                    <MDBContainer>
+                            <MDBCard style={{ width: "19rem" , height: "35rem", background: "rgba(1,1,1, 0.05)"}}>
+                            <MDBCardImage className="img-fluid" src={poster} waves/>
+                            <MDBCardBody>
+                                <MDBCardTitle>{contentname}</MDBCardTitle>
+                                <MDBCardText >{description}</MDBCardText>
+                                <Link id ={id} style={{fontSize: "19px"}}onClick={this.moreInfo}>More Info ⓘ</Link>
+                                <MDBBtn id ={id} type="submit" outline color="primary" 
+                                    style={{marginTop: "-0.6rem",float: "right", borderRadius: "20px", fontSize:"10px"}} onClick={this.addToList}>
+                                        🖉
+                                </MDBBtn>
+                            </MDBCardBody>
+                            </MDBCard>
+                    </MDBContainer>
+                </MDBCol>
+            </div>
+        )
+    }
+
+    moreInfo = (e)=>{
+        console.log(e.target.id);
+        var idArray = e.target.id.split(',');
+        this.setState({e: idArray});
+        this.setState({moreInfo: true})
+
     }
 
     addToList = (e)=>{
+        console.log(e.target.id);
         var idArray = e.target.id.split(',');
         
         this.setState({e: idArray});
         
-        this.setState({addToList: true});
+        this.setState({addToList: true}); 
     }
 
     render(){
-        if(this.state.addToList === true){
-            console.log(this.state.e);
-            return <Redirect to={{
-                pathname: '/review', state: {contentname: this.state.e[0], 
-                    releaseyear: this.state.e[1], poster: this.state.e[2]}}} />
+        if(this.state.addToList === true || this.state.moreInfo === true){
+            if(this.state.addToList === true){
+                return <Redirect to={{
+                    pathname: '/review', state: {contentname: this.state.e[0], 
+                    releaseyear: this.state.e[1], poster: this.state.e[2]
+                }}} />
+            }
+            else{
+                return <Redirect to={{
+                    pathname: '/movieInfo', state: {contentname: this.state.e[0], 
+                    releaseyear: this.state.e[1], poster: this.state.e[2]
+                }}} />
+            }
         }
         else{
             return <div>
